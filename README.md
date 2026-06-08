@@ -19,6 +19,18 @@ VEIL is the world's first AI trading audit protocol — infrastructure that sits
 
 ---
 
+## Project Description (Submission)
+
+VEIL is the world's first AI trading audit layer — infrastructure that sits between any AI trading agent and order execution. It solves the critical unsolved problem in agentic trading: AI agents hallucinate confidence, invent signals, and execute without accountability.
+
+**Technical approach:** VEIL intercepts every trade decision and runs it through 5 modular verification layers (PHANTOM → ORACLE → GAUNTLET → PRISM → CHRONICLE) using all 5 Bitget Skill Hub skills simultaneously. The GAUNTLET layer becomes adversarial — it actively attacks each trade with 5 risk challenges before permitting execution. Every decision is logged with full signal sources, layer scores, and challenge results — exportable as JSON.
+
+**Extensibility:** Any agent can be plugged in. Any new challenge layer can be added by extending a single function. The audit engine is fully modular and documented for low-friction developer integration.
+
+**Verifiable evidence:** 14,203 audit decisions logged with real timestamps, 847+ Bitget API calls tracked live, complete JSON export available from the dashboard.
+
+---
+
 ## The Problem
 
 AI trading agents hallucinate confidence. They invent signals. They execute without accountability.
@@ -231,18 +243,6 @@ console.log(result.verdict)    // 'APPROVED' or 'BLOCKED'
 console.log(result.finalScore) // 0-100
 console.log(result.layers)     // all 5 layer scores
 ```
-
----
-
-## Project Description (Submission)
-
-VEIL is the world's first AI trading audit layer — infrastructure that sits between any AI trading agent and order execution. It solves the critical unsolved problem in agentic trading: AI agents hallucinate confidence, invent signals, and execute without accountability.
-
-**Technical approach:** VEIL intercepts every trade decision and runs it through 5 modular verification layers (PHANTOM → ORACLE → GAUNTLET → PRISM → CHRONICLE) using all 5 Bitget Skill Hub skills simultaneously. The GAUNTLET layer becomes adversarial — it actively attacks each trade with 5 risk challenges before permitting execution. Every decision is logged with full signal sources, layer scores, and challenge results — exportable as JSON.
-
-**Extensibility:** Any agent can be plugged in. Any new challenge layer can be added by extending a single function. The audit engine is fully modular and documented for low-friction developer integration.
-
-**Verifiable evidence:** 14,203 audit decisions logged with real timestamps, 847+ Bitget API calls tracked live, complete JSON export available from the dashboard.
 
 ---
 
