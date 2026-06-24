@@ -66,32 +66,32 @@ When an agent says "Long BTC, 93% confidence" — that number is fabricated. No 
 
 ```mermaid
 flowchart TD
-    A["AI Trading Agent\nATLAS-7 · APEX-3 · HERALD-2"] -->|"Submit Trade Signal"| VEIL
+    A["AI Trading Agent<br>ATLAS-7 · APEX-3 · HERALD-2"] -->|"Submit Trade Signal"| VEIL
 
     subgraph VEIL["VEIL Audit Pipeline"]
-        L1["L1 · PHANTOM\nSignal Verification"] --> L2
-        L2["L2 · ORACLE\nMarket Context Validation"] --> L3
-        L3["L3 · GAUNTLET\nAdversarial Risk Challenge"] --> L4
-        L4["L4 · PRISM\nExecution Quality Prediction"] --> L5
-        L5["L5 · CHRONICLE\nAgent Reliability Score"]
+        L1["L1 · PHANTOM<br>Signal Verification"] --> L2
+        L2["L2 · ORACLE<br>Market Context Validation"] --> L3
+        L3["L3 · GAUNTLET<br>Adversarial Risk Challenge"] --> L4
+        L4["L4 · PRISM<br>Execution Quality Prediction"] --> L5
+        L5["L5 · CHRONICLE<br>Agent Reliability Score"]
     end
 
     subgraph SKILLS["Bitget Skill Hub — powered by Alibaba Qwen"]
-        S1["technical-analysis\n(Bitget direct)"]
-        S2["sentiment-analyst\n(Bitget direct)"]
-        S3["market-intel\n(Bitget direct)"]
-        S4["news-briefing\n(MCP bridge)"]
-        S5["macro-analyst\n(hybrid)"]
+        S1["technical-analysis<br>(Bitget direct)"]
+        S2["sentiment-analyst<br>(Bitget direct)"]
+        S3["market-intel<br>(Bitget direct)"]
+        S4["news-briefing<br>(MCP bridge)"]
+        S5["macro-analyst<br>(hybrid)"]
     end
 
     SKILLS -->|"Live signal data fed into the layers"| VEIL
 
-    L5 --> V{"Verdict Engine\nWeighted Score 0–100"}
-    V -->|"Score >= 65\n3+ layers passed"| APP["APPROVED\nTrade permitted"]
-    V -->|"Score < 65\nor layers failed"| BLK["BLOCKED\nTrade rejected"]
-    APP --> LOG["Audit Trail\nFull JSON export"]
+    L5 --> V{"Verdict Engine<br>Weighted Score 0–100"}
+    V -->|"Score >= 65<br>3+ layers passed"| APP["APPROVED<br>Trade permitted"]
+    V -->|"Score < 65<br>or layers failed"| BLK["BLOCKED<br>Trade rejected"]
+    APP --> LOG["Audit Trail<br>Full JSON export"]
     BLK --> LOG
-    LOG --> FE["VEIL Dashboard\nMission Control · Challenge Engine\nAgent Registry · Forensics · Timeline"]
+    LOG --> FE["VEIL Dashboard<br>Mission Control · Challenge Engine<br>Agent Registry · Forensics · Timeline"]
 ```
 
 ---
@@ -241,8 +241,6 @@ curl -X POST https://your-vercel-url/api/audit \
 ```
 
 Returns the full audit record: verdict, final score, all 5 layer scores, GAUNTLET challenge results, and signal evidence.
-
-The MCP bridge service is a separate deployable: github.com/0xkinno/veil-mcp-bridge (Node/Express, deployed on Render).
 
 ---
 
