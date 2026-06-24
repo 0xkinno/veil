@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+
+veil-mcp-bridge/
+
+*.zip
+tmp-*.js

@@ -2,17 +2,20 @@
 
 import { useState } from 'react'
 import { AUDIT_RECORDS, LIVE_STATS } from '@/lib/auditEngine'
+import { mergeWithSeeded } from '@/lib/liveAudits'
 import { VerdictBadge } from '@/components/ui'
 
 export default function AuditTimeline() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+
+  const records = mergeWithSeeded(AUDIT_RECORDS).slice(0, 120)
 
   function toggle(id: string) {
     setExpanded(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
   function handleExport() {
-    const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), totalDecisions: LIVE_STATS.totalDecisions, records: AUDIT_RECORDS }, null, 2)], { type: 'application/json' })
+    const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), totalDecisions: LIVE_STATS.totalDecisions, records }, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = 'veil-full-audit-log.json'
@@ -31,7 +34,7 @@ export default function AuditTimeline() {
         <div>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '3px' }}>Audit Timeline</h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-muted)' }}>
-            Verifiable decision history · {LIVE_STATS.totalDecisions.toLocaleString()} total events · Showing last {AUDIT_RECORDS.length}
+            Verifiable decision history · {LIVE_STATS.totalDecisions.toLocaleString()} total events · Showing last {records.length}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -62,7 +65,7 @@ export default function AuditTimeline() {
       <div style={{ position: 'relative', paddingLeft: '28px' }}>
         <div style={{ position: 'absolute', left: '9px', top: 0, bottom: 0, width: '1px', background: 'var(--border)' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {AUDIT_RECORDS.map(d => {
+          {records.map(d => {
             const isExp = expanded.has(d.id)
             return (
               <div key={d.id} style={{ position: 'relative' }}>
@@ -88,7 +91,7 @@ export default function AuditTimeline() {
                   {isExp && (
                     <div style={{ borderTop: '1px solid var(--border)', padding: '14px 16px', background: 'var(--bg-primary)' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px', marginBottom: '10px' }}>
-                        {d.layers.map(layer => (
+                        {(d.layers ?? []).map(layer => (
                           <div key={layer.code} style={{ background: 'var(--bg-surface)', border: `1px solid var(--border)`, borderLeft: `2px solid ${layer.status === 'pass' ? 'var(--bull)' : layer.status === 'warn' ? 'var(--warn)' : 'var(--bear)'}`, borderRadius: '5px', padding: '8px 10px' }}>
                             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '8px', fontWeight: 700, color: layer.code === 'GAUNTLET' ? 'var(--warn)' : 'var(--brand)', marginBottom: '3px' }}>{layer.code}</div>
                             <div style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--text-secondary)', marginBottom: '5px' }}>{layer.name}</div>

@@ -1,13 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { AUDIT_RECORDS, BTC_PRICE_DATA, FORENSIC_INSIGHTS } from '@/lib/auditEngine'
+import { mergeWithSeeded } from '@/lib/liveAudits'
 import { VerdictBadge, MetricCard } from '@/components/ui'
 
 export default function Forensics() {
   const [range, setRange] = useState('7D')
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; d: typeof AUDIT_RECORDS[0] } | null>(null)
-  const decisions = AUDIT_RECORDS.slice(0, 20)
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; d: any } | null>(null)
+
+  const hoursMap: Record<string, number> = { '24H': 24, '7D': 168, '30D': 720, 'All': 999999 }
+  const cutoff = Date.now() - hoursMap[range] * 60 * 60 * 1000
+  const decisions = mergeWithSeeded(AUDIT_RECORDS).filter(d => new Date(d.timestamp).getTime() > cutoff).slice(0, 20)
 
   const W = 880, H = 300, pad = { t: 16, r: 20, b: 36, l: 56 }
   const iW = W - pad.l - pad.r
@@ -126,18 +131,20 @@ export default function Forensics() {
             </thead>
             <tbody>
               {decisions.map(d => (
-                <tr key={d.id} style={{ cursor: 'pointer' }}>
-                  <td><span className="mono-id">{formatTime(d.timestamp)}</span></td>
-                  <td style={{ fontSize: '12px' }}>{d.agentName}</td>
-                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{d.asset}</td>
-                  <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: d.direction === 'LONG' ? 'var(--bull)' : 'var(--bear)' }}>{d.direction}</span></td>
-                  <td><span className="mono-data">${d.entryPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></td>
-                  <td><span className="mono-data">{d.exitPrice ? `$${d.exitPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '—'}</span></td>
-                  <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: d.pnl && d.pnl > 0 ? 'var(--bull)' : d.pnl ? 'var(--bear)' : 'var(--text-muted)' }}>{d.pnl ? `+$${d.pnl.toFixed(2)}` : '—'}</span></td>
-                  <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 700, color: d.finalScore >= 70 ? 'var(--bull)' : d.finalScore >= 50 ? 'var(--warn)' : 'var(--bear)' }}>{d.finalScore}</span></td>
-                  <td><VerdictBadge verdict={d.verdict} /></td>
-                  <td style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '11px', maxWidth: '200px' }}>{d.forensicSummary}</td>
-                </tr>
+                <Link key={d.id} href={`/dashboard/challenge?id=${d.id}`} legacyBehavior>
+                  <tr style={{ cursor: 'pointer' }}>
+                    <td><span className="mono-id">{formatTime(d.timestamp)}</span></td>
+                    <td style={{ fontSize: '12px' }}>{d.agentName}</td>
+                    <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{d.asset}</td>
+                    <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: d.direction === 'LONG' ? 'var(--bull)' : 'var(--bear)' }}>{d.direction}</span></td>
+                    <td><span className="mono-data">${d.entryPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></td>
+                    <td><span className="mono-data">{d.exitPrice ? `$${d.exitPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '—'}</span></td>
+                    <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: d.pnl && d.pnl > 0 ? 'var(--bull)' : d.pnl ? 'var(--bear)' : 'var(--text-muted)' }}>{d.pnl ? `+$${d.pnl.toFixed(2)}` : '—'}</span></td>
+                    <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 700, color: d.finalScore >= 70 ? 'var(--bull)' : d.finalScore >= 50 ? 'var(--warn)' : 'var(--bear)' }}>{d.finalScore}</span></td>
+                    <td><VerdictBadge verdict={d.verdict} /></td>
+                    <td style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '11px', maxWidth: '200px' }}>{d.forensicSummary}</td>
+                  </tr>
+                </Link>
               ))}
             </tbody>
           </table>

@@ -1,14 +1,55 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { AUDIT_RECORDS, AGENTS, LAYER_META, type AuditRecord, type AgentId } from '@/lib/auditEngine'
 import { VerdictBadge, ScoreBar, ScoreRing, LayerBadge } from '@/components/ui'
 
 const DECISIONS_WITH_SIGNALS = AUDIT_RECORDS.filter(d => d.signals.length > 0)
 
-export default function ChallengeEngine() {
+function ChallengeEngineInner() {
+  const searchParams = useSearchParams()
+  const incomingId = searchParams.get('id')
+
   const [selectedId, setSelectedId] = useState<AgentId>('momentum')
   const [selected, setSelected] = useState<AuditRecord>(DECISIONS_WITH_SIGNALS[0])
+
+  // On first load, if a specific audit ID was passed via URL (from Mission Control),
+  // try to load that exact record. If it has no signal data, fall back to the
+  // nearest record from the same agent that does — so the Evidence panel is never empty.
+  useEffect(() => {
+    if (!incomingId) return
+  
+    // First check live audits stored this session
+    let liveAudits: AuditRecord[] = []
+    try {
+      liveAudits = JSON.parse(sessionStorage.getItem('veil_live_audits') || '[]')
+    } catch (e) {
+      liveAudits = []
+    }
+  
+    const liveMatch = liveAudits.find(r => r.id === incomingId)
+    if (liveMatch) {
+      setSelected(liveMatch)
+      setSelectedId(liveMatch.agentId)
+      return
+    }
+  
+    // Otherwise check seeded historical records
+    const exactMatch = AUDIT_RECORDS.find(r => r.id === incomingId)
+    if (!exactMatch) return
+  
+    if (exactMatch.signals.length > 0) {
+      setSelected(exactMatch)
+      setSelectedId(exactMatch.agentId)
+    } else {
+      const fallback = AUDIT_RECORDS.find(
+        r => r.agentId === exactMatch.agentId && r.signals.length > 0
+      )
+      setSelected({ ...exactMatch, signals: fallback?.signals ?? [], challenges: fallback?.challenges ?? exactMatch.challenges })
+      setSelectedId(exactMatch.agentId)
+    }
+  }, [incomingId])
 
   const agentDecisions = DECISIONS_WITH_SIGNALS.filter(d => d.agentId === selectedId)
   const agent = AGENTS[selectedId]
@@ -276,5 +317,12 @@ export default function ChallengeEngine() {
         </div>
       </div>
     </div>
+  )
+}
+export default function ChallengeEngine() {
+  return (
+    <Suspense fallback={<div style={{ padding: '28px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>Loading Challenge Engine…</div>}>
+      <ChallengeEngineInner />
+    </Suspense>
   )
 }

@@ -10,32 +10,18 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#00B4D8',
-          dark: '#0077A8',
-          light: '#E0F7FD',
+          DEFAULT: '#2FD1FF',
+          dark: '#0090D4',
+          light: '#BDEEFF',
         },
-        surface: {
-          bg: '#F7FAFC',
-          primary: '#FFFFFF',
-          secondary: '#EEF5FA',
-        },
-        text: {
-          primary: '#0B1523',
-          secondary: '#4A6580',
-          tertiary: '#8BA3B8',
-        },
-        border: {
-          default: '#DDE8F0',
-          active: '#00B4D8',
-        },
-        bull: '#00C896',
-        bear: '#F04E6A',
-        warn: '#F5A623',
-        ink: '#0B1523',
+        bull: '#34E5A0',
+        bear: '#FF5C72',
+        warn: '#F0AE4D',
       },
       fontFamily: {
+        display: ['Manrope', 'sans-serif'],
         sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {
         '2xs': '10px',
@@ -49,41 +35,18 @@ const config: Config = {
         '3xl': '52px',
       },
       borderRadius: {
-        card: '10px',
-        btn: '6px',
-        sm: '4px',
+        card: '14px',
+        btn: '9px',
+        sm: '5px',
       },
       spacing: {
         '18': '72px',
         sidebar: '220px',
         topbar: '64px',
       },
-      boxShadow: {
-        none: 'none',
-      },
       animation: {
-        'fade-in': 'fadeIn 150ms ease-out',
-        'pulse-dot': 'pulseDot 2s ease-in-out infinite',
-        'score-fill': 'scoreFill 1s ease-out forwards',
-        'ticker': 'ticker 30s linear infinite',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        pulseDot: {
-          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.4', transform: 'scale(0.85)' },
-        },
-        scoreFill: {
-          '0%': { strokeDashoffset: '339.3' },
-          '100%': { strokeDashoffset: 'var(--dash-offset)' },
-        },
-        ticker: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
+        'fade-in': 'fadeIn 220ms cubic-bezier(0.4,0,0.2,1)',
+        'pulse-dot': 'pulse-dot 2s ease-in-out infinite',
       },
     },
   },

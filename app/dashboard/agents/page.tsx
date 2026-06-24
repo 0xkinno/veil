@@ -1,5 +1,6 @@
 'use client'
 
+import { mergeWithSeededForAgent } from '@/lib/liveAudits'
 import { useState } from 'react'
 import { AGENTS, AUDIT_RECORDS, TRUST_HISTORY, type AgentId } from '@/lib/auditEngine'
 import { VerdictBadge, ScoreBar, MetricCard } from '@/components/ui'
@@ -7,7 +8,7 @@ import { VerdictBadge, ScoreBar, MetricCard } from '@/components/ui'
 export default function AgentRegistry() {
   const [activeId, setActiveId] = useState<AgentId>('momentum')
   const agent = AGENTS[activeId]
-  const decisions = AUDIT_RECORDS.filter(d => d.agentId === activeId).slice(0, 15)
+  const decisions = mergeWithSeededForAgent(AUDIT_RECORDS, activeId).slice(0, 15)
   const trustData = TRUST_HISTORY[activeId]
   const dates = ['May 26','May 28','May 30','Jun 1','Jun 2','Jun 3','Jun 4','Jun 5','Jun 5','Jun 5','Jun 6','Jun 6']
 
@@ -42,7 +43,25 @@ export default function AgentRegistry() {
             3 agents tracked · 14,203 total decisions · Behavioral DNA analysis
           </p>
         </div>
-        <button className="btn-outline">↓ Export Agent Report</button>
+        <button className="btn-outline" onClick={() => {
+  const report = {
+    exportedAt: new Date().toISOString(),
+    agent: AGENTS[activeId],
+    decisions: AUDIT_RECORDS.filter(d => d.agentId === activeId),
+    trustHistory: TRUST_HISTORY[activeId],
+    summary: {
+      totalDecisions: AGENTS[activeId].totalDecisions,
+      approvalRate: AGENTS[activeId].approvalRate,
+      trustScore: AGENTS[activeId].trustScore,
+      pnlCorrelation: AGENTS[activeId].pnlCorrelation,
+    }
+  }
+  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `veil-agent-${activeId}-report.json`
+  a.click()
+}}>↓ Export Agent Report</button>
       </div>
 
       {/* Agent tabs */}
@@ -57,7 +76,7 @@ export default function AgentRegistry() {
               fontSize: '13px',
               fontWeight: 600,
               color: activeId === a.id ? 'var(--brand)' : 'var(--text-muted)',
-              borderBottom: `3px solid ${activeId === a.id ? 'var(--brand)' : 'transparent'}`,
+          
               marginBottom: '-2px',
               background: 'none',
               border: 'none',
@@ -126,12 +145,12 @@ export default function AgentRegistry() {
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: `${H}px`, overflow: 'visible' }}>
           <defs>
             <linearGradient id="trustGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
+              <stop offset="0%" stopColor="#2FD1FF" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#2FD1FF" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="approvalGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#059669" stopOpacity="0.10" />
-              <stop offset="100%" stopColor="#059669" stopOpacity="0" />
+              <stop offset="0%" stopColor="#34E5A0" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#34E5A0" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -215,7 +234,7 @@ export default function AgentRegistry() {
               cx={toX(i)} cy={toY(v)}
               r={3.5}
               fill="var(--bull)"
-              stroke="white"
+              stroke="var(--card-bg)"
               strokeWidth={1.5}
             />
           ))}
@@ -237,7 +256,7 @@ export default function AgentRegistry() {
               cx={toX(i)} cy={toY(v)}
               r={4}
               fill="var(--brand)"
-              stroke="white"
+              stroke="var(--card-bg)"
               strokeWidth={2}
             />
           ))}
