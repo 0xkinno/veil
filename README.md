@@ -242,6 +242,8 @@ curl -X POST https://your-vercel-url/api/audit \
 
 Returns the full audit record: verdict, final score, all 5 layer scores, GAUNTLET challenge results, and signal evidence.
 
+The MCP bridge service is a separate deployable: github.com/0xkinno/veil-mcp-bridge (Node/Express, deployed on Render).
+
 ---
 
 ## Developer Integration
