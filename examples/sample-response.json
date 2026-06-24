@@ -1,0 +1,19 @@
+﻿{
+  "auditId": "VEIL-1750800000000",
+  "timestamp": "2026-06-24T22:00:00.000Z",
+  "asset": "BTC/USDT",
+  "direction": "LONG",
+  "agentId": "momentum",
+  "scores": { "phantom": 88, "oracle": 74, "gauntlet": 68, "prism": 82, "chronicle": 79 },
+  "finalScore": 78,
+  "verdict": "APPROVED",
+  "layersPassed": 4,
+  "dataSource": "live-bitget+mcp",
+  "layers": [
+    { "code": "PHANTOM",   "name": "Signal Verification",          "score": 88, "skill": "technical-analysis" },
+    { "code": "ORACLE",    "name": "Market Context Validation",    "score": 74, "skill": "macro-analyst + market-intel" },
+    { "code": "GAUNTLET",  "name": "Risk Challenge Engine",        "score": 68, "skill": "sentiment-analyst + news-briefing" },
+    { "code": "PRISM",     "name": "Execution Quality Prediction", "score": 82, "skill": "market-intel" },
+    { "code": "CHRONICLE", "name": "Agent Reliability Score",      "score": 79, "skill": "all-skills-cumulative" }
+  ]
+}
