@@ -13,6 +13,7 @@ VEIL is an AI trading audit protocol — infrastructure that sits between any AI
 |---|---|
 | **Live Demo** | https://veil-pied-pi.vercel.app/ |
 | **GitHub** | https://github.com/0xkinno/veil |
+| **Demo Video** | https://youtu.be/uLCPBe-eMjs?si=TH8RZK5b3RD161Ny |
 | **Track** | 02 — Trading Infrastructure |
 | **Team** | VEIL (Solo Build) |
 | **Stack** | Next.js 14 · TypeScript · SVG/CSS rendering · Vercel · Render (MCP bridge) |
